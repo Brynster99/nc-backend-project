@@ -19,6 +19,15 @@ describe('API-wide tests', () => {
         expect(msg).toBe('Server Error');
       });
   });
+
+  test('STATUS: 404, Returns error message when invalid path specified', () => {
+    return request(app)
+      .get('/api/invalidpath')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Path not found');
+      });
+  });
 });
 
 describe('GET /api/topics', () => {
@@ -41,13 +50,33 @@ describe('GET /api/topics', () => {
         }
       );
   });
+});
 
-  test('STATUS: 404, Returns error message when invalid path specified', () => {
+describe('GET /api/articles', () => {
+  test('STATUS: 200, Returns an array of article objects', () => {
     return request(app)
-      .get('/api/invalidpath')
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe('Path not found');
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles[0]).toEqual(
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          })
+        );
+      });
+  });
+
+  test('STATUS: 200, Returned array is sorted by date_created in desc order', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ key: 'created_at', descending: true });
       });
   });
 });

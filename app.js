@@ -2,6 +2,7 @@ const app = require('express')();
 const {
   getBrokenPath,
   getTopics,
+  getArticles,
   getArticleById,
 } = require('./controllers/controllers');
 const { customErrors, psqlErrors, serverErrors } = require('./errors');
@@ -9,6 +10,7 @@ const { customErrors, psqlErrors, serverErrors } = require('./errors');
 // --== Endpoints ==--
 app.get('/api/brokenpath', getBrokenPath);
 app.get('/api/topics', getTopics);
+app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
 
 // if requested endpoint is not found...
