@@ -1,12 +1,25 @@
 const app = require('express')();
+const {
+  getBrokenPath,
+  getTopics,
+  getArticleById,
+} = require('./controllers/controllers');
+const { customErrors, psqlErrors, serverErrors } = require('./errors');
 
-const { getTopics } = require('./controllers/controllers');
-
+// --== Endpoints ==--
+app.get('/api/brokenpath', getBrokenPath);
 app.get('/api/topics', getTopics);
+app.get('/api/articles/:article_id', getArticleById);
 
-// Final error (404 - path not found)
-app.all('*', (req, res) => {
+// if requested endpoint is not found...
+app.all('/*', (req, res) => {
+  console.log('in pathNotFound api handler');
   res.status(404).send({ msg: 'Path not found' });
 });
+
+// --== Error Handlers ==--
+app.use(customErrors);
+app.use(psqlErrors);
+app.use(serverErrors);
 
 module.exports = app;
