@@ -3,13 +3,20 @@ const db = require('../db/connection');
 // --== Models ==--
 exports.fetchTopics = () => {
   console.log('invoked fetchTopics');
-  return db.query('select * from topics').then(({ rows }) => rows);
+  return db.query('select * from topics;').then(({ rows }) => rows);
+};
+
+exports.fetchArticles = () => {
+  console.log('invoked fetchArticles');
+  return db
+    .query('select * from articles order by created_at desc;')
+    .then(({ rows }) => rows);
 };
 
 exports.fetchArticleById = (articleId) => {
   console.log('invoked fetchArticleById');
   return db
-    .query('select * from articles where article_id = $1', [articleId])
+    .query('select * from articles where article_id = $1;', [articleId])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
