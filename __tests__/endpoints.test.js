@@ -1,8 +1,8 @@
-const res = require('express/lib/response');
 const request = require('supertest');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
+const { convertTimestampToDate } = require('../db/helpers/utils');
 const seed = require('../db/seeds/seed');
 
 // --== Hooks (Setup/Teardown) ==--
@@ -11,7 +11,7 @@ afterAll(() => db.end());
 
 // --== Tests ==--
 describe('API-wide tests', () => {
-  test('STATUS: 500, Returns error if code is broken)', () => {
+  test('STATUS: 500, Returns error if code is broken', () => {
     return request(app)
       .get('/api/brokenpath')
       .expect(500)
@@ -113,6 +113,50 @@ describe('GET /api/articles/:article_id', () => {
   test('STATUS: 400, Returns bad request if ID is invalid', () => {
     return request(app)
       .get('/api/articles/invalidid')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+});
+
+describe('PATCH /api/articles/:article_id', () => {
+  test('STATUS: 200, Returns updated object in new state', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: 50,
+      })
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            author: 'butter_bridge',
+            body: 'I find this existence challenging',
+            created_at: '2020-07-09T20:11:00.000Z',
+            votes: 150,
+          })
+        );
+      });
+  });
+
+  test('STATUS: 404, Returns not found if ID is invalid', () => {
+    return request(app)
+      .patch('/api/articles/99')
+      .send({ inc_votes: 50 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No article with ID: 99');
+      });
+  });
+
+  test('STATUS: 400, Returns bad request if article_id is invalid', () => {
+    return request(app)
+      .patch('/api/articles/invalidid')
+      .send({ inc_votes: 50 })
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad Request');

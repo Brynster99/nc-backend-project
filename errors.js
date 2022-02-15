@@ -19,5 +19,6 @@ exports.psqlErrors = (err, req, res, next) => {
 
 exports.serverErrors = (err, req, res, next) => {
   console.log('invoked serverErrors');
+  console.log(err);
   res.status(500).send({ msg: 'Server Error' });
 };

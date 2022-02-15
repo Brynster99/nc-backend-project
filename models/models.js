@@ -28,3 +28,22 @@ exports.fetchArticleById = (articleId) => {
       }
     });
 };
+
+exports.updateArticleById = (articleId, votes) => {
+  console.log('invoked patchArticleById');
+  return db
+    .query(
+      'update articles set votes = votes + $1 where article_id = $2 returning *;',
+      [votes, articleId]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article with ID: ${articleId}`,
+        });
+      } else {
+        return rows[0];
+      }
+    });
+};

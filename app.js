@@ -1,17 +1,22 @@
-const app = require('express')();
+const express = require('express');
+const { customErrors, psqlErrors, serverErrors } = require('./errors');
 const {
-  getBrokenPath,
+  getBrokenFunction,
   getTopics,
   getArticles,
   getArticleById,
+  patchArticleById,
 } = require('./controllers/controllers');
-const { customErrors, psqlErrors, serverErrors } = require('./errors');
+
+const app = express(); // creates instance of express...
+app.use(express.json()); // parses request body to req.body...
 
 // --== Endpoints ==--
-app.get('/api/brokenpath', getBrokenPath);
+app.get('/api/brokenpath', getBrokenFunction);
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
+app.patch('/api/articles/:article_id', patchArticleById);
 
 // if requested endpoint is not found...
 app.all('/*', (req, res) => {
