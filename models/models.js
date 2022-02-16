@@ -1,22 +1,31 @@
 const db = require('../db/connection');
 
 // --== Models ==--
+exports.fetchUsers = () => {
+  console.log('invoked fetchUsers');
+
+  return db.query('SELECT username FROM users').then(({ rows }) => rows);
+};
+
 exports.fetchTopics = () => {
   console.log('invoked fetchTopics');
-  return db.query('select * from topics;').then(({ rows }) => rows);
+
+  return db.query('SELECT * FROM topics;').then(({ rows }) => rows);
 };
 
 exports.fetchArticles = () => {
   console.log('invoked fetchArticles');
+
   return db
-    .query('select * from articles order by created_at desc;')
+    .query('SELECT * FROM articles ORDER BY created_at DESC;')
     .then(({ rows }) => rows);
 };
 
 exports.fetchArticleById = (articleId) => {
   console.log('invoked fetchArticleById');
+
   return db
-    .query('select * from articles where article_id = $1;', [articleId])
+    .query('SELECT * FROM articles WHERE article_id = $1;', [articleId])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
@@ -31,9 +40,10 @@ exports.fetchArticleById = (articleId) => {
 
 exports.updateArticleById = (articleId, votes) => {
   console.log('invoked patchArticleById');
+
   return db
     .query(
-      'update articles set votes = votes + $1 where article_id = $2 returning *;',
+      'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;',
       [votes, articleId]
     )
     .then(({ rows }) => {

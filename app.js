@@ -1,7 +1,7 @@
 const express = require('express');
 const { customErrors, psqlErrors, serverErrors } = require('./errors');
 const {
-  getBrokenFunction,
+  getUsers,
   getTopics,
   getArticles,
   getArticleById,
@@ -12,7 +12,7 @@ const app = express(); // creates instance of express...
 app.use(express.json()); // parses request body to req.body...
 
 // --== Endpoints ==--
-app.get('/api/brokenpath', getBrokenFunction);
+app.get('/api/users', getUsers);
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);

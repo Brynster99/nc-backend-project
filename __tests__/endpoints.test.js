@@ -2,7 +2,6 @@ const request = require('supertest');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
-const { convertTimestampToDate } = require('../db/helpers/utils');
 const seed = require('../db/seeds/seed');
 
 // --== Hooks (Setup/Teardown) ==--
@@ -11,21 +10,39 @@ afterAll(() => db.end());
 
 // --== Tests ==--
 describe('API-wide tests', () => {
-  test('STATUS: 500, Returns error if code is broken', () => {
-    return request(app)
-      .get('/api/brokenpath')
-      .expect(500)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe('Server Error');
-      });
-  });
-
   test('STATUS: 404, Returns error message when invalid path specified', () => {
     return request(app)
       .get('/api/invalidpath')
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Path not found');
+      });
+  });
+});
+
+describe('GET /api/users', () => {
+  test('STATUS: 200, Returns an array of user objects', () => {
+    return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(typeof users).toBe('object');
+        expect(Array.isArray(users)).toBe(true);
+        expect(users.length).toBe(4);
+        expect(users).toEqual([
+          {
+            username: 'butter_bridge',
+          },
+          {
+            username: 'icellusedkars',
+          },
+          {
+            username: 'rogersop',
+          },
+          {
+            username: 'lurker',
+          },
+        ]);
       });
   });
 });
