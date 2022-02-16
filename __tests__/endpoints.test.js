@@ -160,7 +160,29 @@ describe('PATCH /api/articles/:article_id', () => {
       });
   });
 
-  test('STATUS: 404, Returns not found if ID is invalid', () => {
+  test('STATUS: 200, Returns updated object in new state when given negative votes', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: -50,
+      })
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            author: 'butter_bridge',
+            body: 'I find this existence challenging',
+            created_at: '2020-07-09T20:11:00.000Z',
+            votes: 50,
+          })
+        );
+      });
+  });
+
+  test('STATUS: 404, Returns not found if article_id valid but non-existent', () => {
     return request(app)
       .patch('/api/articles/99')
       .send({ inc_votes: 50 })
@@ -170,10 +192,34 @@ describe('PATCH /api/articles/:article_id', () => {
       });
   });
 
-  test('STATUS: 400, Returns bad request if article_id is invalid', () => {
+  test('STATUS: 400, Returns bad request if invalid article_id', () => {
     return request(app)
       .patch('/api/articles/invalidid')
       .send({ inc_votes: 50 })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS: 400, Returns bad request if body does not contain inc_votes property', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({})
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(
+          "Bad Request, body does not contain 'inc_votes' property"
+        );
+      });
+  });
+
+  test('STATUS: 400, Returns bad request if inc_votes property contains invalid value', () => {
+    return request(app)
+      .patch('/api/articles/1')
+      .send({
+        inc_votes: 'invalidValue',
+      })
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad Request');

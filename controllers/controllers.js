@@ -46,7 +46,8 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticleById = (req, res, next) => {
   console.log('invoked patchArticleById');
 
-  updateArticleById(req.params.article_id, req.body.inc_votes)
+
+  updateArticleById(req.params.article_id, req.body)
     .then((article) => {
       res.status(200).send({ article });
     })
