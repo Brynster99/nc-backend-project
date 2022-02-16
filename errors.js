@@ -1,7 +1,7 @@
 // --== Error Handlers ==--
 exports.customErrors = (err, req, res, next) => {
   console.log('invoked customErrors');
-  if (err.status) {
+  if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);

@@ -3,20 +3,20 @@ const db = require('../db/connection');
 // --== Models ==--
 exports.fetchTopics = () => {
   console.log('invoked fetchTopics');
-  return db.query('select * from topics;').then(({ rows }) => rows);
+  return db.query('SELECT * FROM topics;').then(({ rows }) => rows);
 };
 
 exports.fetchArticles = () => {
   console.log('invoked fetchArticles');
   return db
-    .query('select * from articles order by created_at desc;')
+    .query('SELECT * FROM articles ORDER BY created_at DESC;')
     .then(({ rows }) => rows);
 };
 
 exports.fetchArticleById = (articleId) => {
   console.log('invoked fetchArticleById');
   return db
-    .query('select * from articles where article_id = $1;', [articleId])
+    .query('SELECT * FROM articles WHERE article_id = $1;', [articleId])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
@@ -29,12 +29,19 @@ exports.fetchArticleById = (articleId) => {
     });
 };
 
-exports.updateArticleById = (articleId, votes) => {
+exports.updateArticleById = (articleId, reqBody) => {
   console.log('invoked patchArticleById');
+
+  if (!reqBody.hasOwnProperty('inc_votes'))
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request, body does not contain 'inc_votes' property",
+    });
+
   return db
     .query(
-      'update articles set votes = votes + $1 where article_id = $2 returning *;',
-      [votes, articleId]
+      'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;',
+      [reqBody.inc_votes, articleId]
     )
     .then(({ rows }) => {
       if (rows.length === 0) {
