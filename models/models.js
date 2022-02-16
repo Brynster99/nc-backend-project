@@ -41,9 +41,8 @@ exports.updateArticleById = (articleId, reqBody) => {
   return db
     .query(
       'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;',
-      [reqBody.inc_votes, articleId]
-    )
-    .then(({ rows }) => {
+      [reqBody.inc_votes, articleId])
+      .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
