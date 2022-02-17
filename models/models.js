@@ -1,6 +1,15 @@
 const db = require('../db/connection');
+const fs = require('fs/promises');
 
 // --== Models ==--
+exports.fetchApiDocs = () => {
+  console.log('invoked fetchApiDocs');
+
+  return fs
+    .readFile(`${__dirname}/../endpoints.json`)
+    .then((fileContent) => JSON.parse(fileContent));
+};
+
 exports.fetchUsers = () => {
   console.log('invoked fetchUsers');
 

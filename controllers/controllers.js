@@ -1,4 +1,5 @@
 const {
+  fetchApiDocs,
   fetchUsers,
   fetchTopics,
   fetchArticles,
@@ -7,6 +8,14 @@ const {
 } = require('../models/models');
 
 // --== Controllers ==--
+exports.getApiDocs = (req, res, next) => {
+  console.log('invoked getApiDocs');
+
+  fetchApiDocs().then((docs) => {
+    res.status(200).send({ docs });
+  });
+};
+
 exports.getUsers = (req, res, next) => {
   console.log('invoked getUsers');
 
