@@ -4,7 +4,9 @@ const {
   fetchTopics,
   fetchArticles,
   fetchArticleById,
+  fetchArticleComments,
   updateArticleById,
+  checkExists,
 } = require('../models/models');
 
 // --== Controllers ==--
@@ -38,6 +40,17 @@ exports.getArticleById = (req, res, next) => {
   fetchArticleById(req.params.article_id)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch(next);
+};
+
+exports.getArticleComments = (req, res, next) => {
+  return Promise.all([
+    fetchArticleComments(req.params.article_id),
+    checkExists('articles', 'article_id', req.params.article_id),
+  ])
+    .then(([comments]) => {
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

@@ -42,6 +42,12 @@ exports.fetchArticleById = (articleId) => {
     });
 };
 
+exports.fetchArticleComments = (articleId) => {
+  return db
+    .query('SELECT * FROM comments WHERE article_id = $1', [articleId])
+    .then(({ rows }) => rows);
+};
+
 exports.updateArticleById = (articleId, reqBody) => {
   if (!reqBody.hasOwnProperty('inc_votes'))
     return Promise.reject({
@@ -63,5 +69,24 @@ exports.updateArticleById = (articleId, reqBody) => {
       } else {
         return rows[0];
       }
+    });
+};
+
+// --== Utils ==--
+exports.checkExists = (table, column, id) => {
+  const validTables = ['articles', 'topics', 'users', 'comments'];
+  const validColumns = ['article_id', 'topic_id', 'user_id', 'comment_id'];
+
+  if (!validTables.includes(table) || !validColumns.includes(column))
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+
+  return db
+    .query(`SELECT * FROM ${table} WHERE ${column} = $1`, [id])
+    .then(({ rows }) => {
+      if (rows.length === 0)
+        return Promise.reject({
+          status: 404,
+          msg: `No article with ID: ${id}`,
+        });
     });
 };

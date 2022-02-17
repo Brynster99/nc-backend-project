@@ -3,6 +3,7 @@ const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data');
 const seed = require('../db/seeds/seed');
+const { checkExists } = require('../models/models');
 
 // --== Hooks (Setup/Teardown) ==--
 beforeEach(() => seed(testData));
@@ -190,6 +191,53 @@ describe('GET /api/articles/:article_id', () => {
   });
 });
 
+describe('GET /api/articles/:article_id/comments', () => {
+  test('STATUS: 200, Returns array of comments for given article_id', () => {
+    return request(app)
+      .get('/api/articles/1/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments[0]).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          })
+        );
+        expect(comments.length).toBe(11);
+      });
+  });
+
+  test('STATUS: 200, Returns empty array for valid and existent article that has no comments', () => {
+    return request(app)
+      .get('/api/articles/2/comments')
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual([]);
+      });
+  });
+
+  test('STATUS: 400, Returns error bad request when given invalid article_id', () => {
+    return request(app)
+      .get('/api/articles/notAnArticle/comments')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS: 404, Returns error not found if article_id is valid but non-existent', () => {
+    return request(app)
+      .get('/api/articles/999/comments')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No article with ID: 999');
+      });
+  });
+});
+
 describe('PATCH /api/articles/:article_id', () => {
   test('STATUS: 200, Returns updated object in new state', () => {
     return request(app)
@@ -277,5 +325,18 @@ describe('PATCH /api/articles/:article_id', () => {
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad Request');
       });
+  });
+});
+
+// --== Utils Tests ==--
+describe('Utils Tests', () => {
+  describe('checkExists()', () => {
+    test('Checks if the given value exists in the given column of given table', () => {
+      return checkExists('articles', 'article_id', 418)
+        .then(() => {})
+        .catch((err) => {
+          expect(err.msg).toBe('No article with ID: 418');
+        });
+    });
   });
 });
