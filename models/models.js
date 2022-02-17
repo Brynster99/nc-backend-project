@@ -3,36 +3,28 @@ const fs = require('fs/promises');
 
 // --== Models ==--
 exports.fetchApiDocs = () => {
-  console.log('invoked fetchApiDocs');
-
   return fs
     .readFile(`${__dirname}/../endpoints.json`)
     .then((fileContent) => JSON.parse(fileContent));
 };
 
 exports.fetchUsers = () => {
-  console.log('invoked fetchUsers');
-
   return db.query('SELECT username FROM users').then(({ rows }) => rows);
 };
 
 exports.fetchTopics = () => {
-  console.log('invoked fetchTopics');
-
   return db.query('SELECT * FROM topics;').then(({ rows }) => rows);
 };
 
 exports.fetchArticles = () => {
-  console.log('invoked fetchArticles');
-
   return db
-    .query('SELECT * FROM articles ORDER BY created_at DESC;')
+    .query(
+      'SELECT articles.*, COUNT(articles.article_id) as comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;'
+    )
     .then(({ rows }) => rows);
 };
 
 exports.fetchArticleById = (articleId) => {
-  console.log('invoked fetchArticleById');
-
   return db
     .query(
       'SELECT articles.*, COUNT(articles.article_id) as comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;',
@@ -51,8 +43,6 @@ exports.fetchArticleById = (articleId) => {
 };
 
 exports.updateArticleById = (articleId, reqBody) => {
-  console.log('invoked patchArticleById');
-
   if (!reqBody.hasOwnProperty('inc_votes'))
     return Promise.reject({
       status: 400,

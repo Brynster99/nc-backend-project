@@ -124,13 +124,7 @@ describe('GET /api/articles', () => {
       .then(({ body: { articles } }) => {
         expect(articles[0]).toEqual(
           expect.objectContaining({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            comment_count: expect.any(String),
+            comment_count: '2',
           })
         );
       });

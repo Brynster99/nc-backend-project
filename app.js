@@ -22,7 +22,6 @@ app.patch('/api/articles/:article_id', patchArticleById);
 
 // if requested endpoint is not found...
 app.all('/*', (req, res) => {
-  console.log('in pathNotFound api handler');
   res.status(404).send({ msg: 'Path not found' });
 });
 
