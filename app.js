@@ -6,6 +6,7 @@ const {
   getTopics,
   getArticles,
   getArticleById,
+  getArticleComments,
   patchArticleById,
 } = require('./controllers/controllers');
 
@@ -13,11 +14,16 @@ const app = express(); // creates instance of express...
 app.use(express.json()); // parses request body to req.body...
 
 // --== Endpoints ==--
+
+// GETs...
 app.get('/api', getApiDocs);
 app.get('/api/users', getUsers);
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
+app.get('/api/articles/:article_id/comments', getArticleComments);
+
+// PATCHs...
 app.patch('/api/articles/:article_id', patchArticleById);
 
 // if requested endpoint is not found...
