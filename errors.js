@@ -1,6 +1,5 @@
 // --== Error Handlers ==--
 exports.customErrors = (err, req, res, next) => {
-  console.log('invoked customErrors');
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {
@@ -9,7 +8,6 @@ exports.customErrors = (err, req, res, next) => {
 };
 
 exports.psqlErrors = (err, req, res, next) => {
-  console.log('invoked psqlErrors');
   if (err.code === '22P02') {
     res.status(400).send({ msg: 'Bad Request' });
   } else {
@@ -18,7 +16,6 @@ exports.psqlErrors = (err, req, res, next) => {
 };
 
 exports.serverErrors = (err, req, res, next) => {
-  console.log('invoked serverErrors');
   console.log(err);
   res.status(500).send({ msg: 'Server Error' });
 };

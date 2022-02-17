@@ -20,6 +20,26 @@ describe('API-wide tests', () => {
   });
 });
 
+describe('GET /api', () => {
+  test('STATUS: 200, Returns JSON instructions for available endpoints and usage', () => {
+    return request(app)
+      .get('/api')
+      .expect(200)
+      .then(({ body: { docs } }) => {
+        expect(docs).toEqual(
+          expect.objectContaining({
+            'GET /api': expect.any(Object),
+            'GET /api/users': expect.any(Object),
+            'GET /api/topics': expect.any(Object),
+            'GET /api/articles': expect.any(Object),
+            'GET /api/article/:article_id': expect.any(Object),
+            'PATCH /api/article/:article_id': expect.any(Object),
+          })
+        );
+      });
+  });
+});
+
 describe('GET /api/users', () => {
   test('STATUS: 200, Returns an array of user objects', () => {
     return request(app)
@@ -94,6 +114,19 @@ describe('GET /api/articles', () => {
       .expect(200)
       .then(({ body: { articles } }) => {
         expect(articles).toBeSorted({ key: 'created_at', descending: true });
+      });
+  });
+
+  test('STATUS: 200, Returns array for which each article object contains comment count', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles[0]).toEqual(
+          expect.objectContaining({
+            comment_count: '2',
+          })
+        );
       });
   });
 });
