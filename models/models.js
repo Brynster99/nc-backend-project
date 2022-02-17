@@ -25,7 +25,10 @@ exports.fetchArticleById = (articleId) => {
   console.log('invoked fetchArticleById');
 
   return db
-    .query('SELECT * FROM articles WHERE article_id = $1;', [articleId])
+    .query(
+      'SELECT articles.*, COUNT(articles.article_id) as comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;',
+      [articleId]
+    )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
@@ -50,8 +53,9 @@ exports.updateArticleById = (articleId, reqBody) => {
   return db
     .query(
       'UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;',
-      [reqBody.inc_votes, articleId])
-      .then(({ rows }) => {
+      [reqBody.inc_votes, articleId]
+    )
+    .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
