@@ -34,7 +34,7 @@ exports.fetchArticleById = (articleId) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No article with ID: ${articleId}`,
+          msg: `No articles with article_id: ${articleId}`,
         });
       } else {
         return rows[0];
@@ -64,12 +64,18 @@ exports.updateArticleById = (articleId, reqBody) => {
       if (rows.length === 0) {
         return Promise.reject({
           status: 404,
-          msg: `No article with ID: ${articleId}`,
+          msg: `No articles with article_id: ${articleId}`,
         });
       } else {
         return rows[0];
       }
     });
+};
+
+exports.removeCommentById = (commentId) => {
+  return db
+    .query('DELETE FROM comments WHERE comment_id = $1', [commentId])
+    .then(() => {});
 };
 
 // --== Utils ==--
@@ -86,7 +92,7 @@ exports.checkExists = (table, column, id) => {
       if (rows.length === 0)
         return Promise.reject({
           status: 404,
-          msg: `No article with ID: ${id}`,
+          msg: `No ${table} with ${column}: ${id}`,
         });
     });
 };

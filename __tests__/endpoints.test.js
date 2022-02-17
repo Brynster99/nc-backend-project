@@ -10,6 +10,8 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 // --== Tests ==--
+
+// GETs...
 describe('API-wide tests', () => {
   test('STATUS: 404, Returns error message when invalid path specified', () => {
     return request(app)
@@ -172,12 +174,12 @@ describe('GET /api/articles/:article_id', () => {
       });
   });
 
-  test('STATUS: 404, Returns not found if ID is not found in db', () => {
+  test('STATUS: 404, Returns not found if ID is valid but not found in db', () => {
     return request(app)
       .get('/api/articles/80')
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe('No article with ID: 80');
+        expect(msg).toBe('No articles with article_id: 80');
       });
   });
 
@@ -233,11 +235,12 @@ describe('GET /api/articles/:article_id/comments', () => {
       .get('/api/articles/999/comments')
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe('No article with ID: 999');
+        expect(msg).toBe('No articles with article_id: 999');
       });
   });
 });
 
+// PATCHs...
 describe('PATCH /api/articles/:article_id', () => {
   test('STATUS: 200, Returns updated object in new state', () => {
     return request(app)
@@ -289,7 +292,7 @@ describe('PATCH /api/articles/:article_id', () => {
       .send({ inc_votes: 50 })
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe('No article with ID: 99');
+        expect(msg).toBe('No articles with article_id: 99');
       });
   });
 
@@ -328,6 +331,36 @@ describe('PATCH /api/articles/:article_id', () => {
   });
 });
 
+// DELETEs...
+describe('DELETE/api/comments/:comment_id', () => {
+  test('STATUS: 204, Deletes comment with given ID and returns no content', () => {
+    return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+
+  test('STATUS: 400, Returns error if comment_id is invalid', () => {
+    return request(app)
+      .delete('/api/comments/invalidId')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS: 404, Returns error if comment_id is valid but non-existent', () => {
+    return request(app)
+      .delete('/api/comments/9001')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No comments with comment_id: 9001');
+      });
+  });
+});
+
 // --== Utils Tests ==--
 describe('Utils Tests', () => {
   describe('checkExists()', () => {
@@ -335,7 +368,16 @@ describe('Utils Tests', () => {
       return checkExists('articles', 'article_id', 418)
         .then(() => {})
         .catch((err) => {
-          expect(err.msg).toBe('No article with ID: 418');
+          expect(err.msg).toBe('No articles with article_id: 418');
+        });
+    });
+
+    test('Returns 400 error if given table or column are NOT in greenlists', () => {
+      return checkExists('notATable', 'article_id', 2)
+        .then(() => {})
+        .catch((err) => {
+          expect(err.status).toBe(400);
+          expect(err.msg).toBe('Bad Request');
         });
     });
   });
