@@ -96,6 +96,25 @@ describe('GET /api/articles', () => {
         expect(articles).toBeSorted({ key: 'created_at', descending: true });
       });
   });
+
+  test('STATUS: 200, Returns array for which each article object contains comment count', () => {
+    return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles[0]).toEqual(
+          expect.objectContaining({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: expect.any(Number),
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          })
+        );
+      });
+  });
 });
 
 describe('GET /api/articles/:article_id', () => {

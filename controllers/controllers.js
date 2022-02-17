@@ -28,7 +28,13 @@ exports.getArticles = (req, res, next) => {
 
   fetchArticles()
     .then((articles) => {
-      res.status(200).send({ articles });
+      const articlePromises = articles.map((article) => {
+        return fetchArticleById(article.article_id).then((article) => article);
+      });
+
+      Promise.all(articlePromises).then((articles) => {
+        res.status(200).send({ articles });
+      });
     })
     .catch(next);
 };
