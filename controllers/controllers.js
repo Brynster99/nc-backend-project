@@ -75,7 +75,15 @@ exports.patchArticleById = (req, res, next) => {
 
 // DELETEs...
 exports.deleteCommentById = (req, res, next) => {
-removeCommentById(req.params.comment_id).
-then(() => res.status(204).send({}))
+  removeCommentById(req.params.comment_id)
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        res.status(404).send({
+          msg: `No comments with comment_id: ${req.params.comment_id}`,
+        });
+      } else {
+        res.status(204).send({});
+      }
+    })
     .catch(next);
 };
