@@ -8,7 +8,9 @@ exports.customErrors = (err, req, res, next) => {
 };
 
 exports.psqlErrors = (err, req, res, next) => {
-  if (err.code === '22P02') {
+  if (err.code === '22P02' || err.code === '42703') {
+    // 22P02: Invalid input type/syntax
+    // 42703: Column does not exist
     res.status(400).send({ msg: 'Bad Request' });
   } else {
     next(err);

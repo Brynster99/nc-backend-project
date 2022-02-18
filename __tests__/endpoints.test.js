@@ -100,6 +100,7 @@ describe('GET /api/articles', () => {
       .then(({ body: { articles } }) => {
         expect(articles[0]).toEqual(
           expect.objectContaining({
+            article_id: expect.any(Number),
             author: expect.any(String),
             title: expect.any(String),
             article_id: expect.any(Number),
@@ -111,11 +112,12 @@ describe('GET /api/articles', () => {
       });
   });
 
-  test('STATUS: 200, Returned array is sorted by date_created in desc order', () => {
+  test('STATUS: 200, Returned array is sorted by date_created in desc order by default', () => {
     return request(app)
       .get('/api/articles')
       .expect(200)
       .then(({ body: { articles } }) => {
+        expect(articles.length === 0).toBe(false);
         expect(articles).toBeSorted({ key: 'created_at', descending: true });
       });
   });
@@ -130,6 +132,33 @@ describe('GET /api/articles', () => {
             comment_count: '2',
           })
         );
+      });
+  });
+
+  test('STATUS: 400, Returns error when there are invalid query values', () => {
+    return request(app)
+      .get('/api/articles?sort_by=invalid')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS: 400, Returns bad request if query values valid but not in greenlist', () => {
+    return request(app)
+      .get('/api/articles?order=notGreenlisted')
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS: 404, Returns error when topic valid but does not exist', () => {
+    return request(app)
+      .get('/api/articles?topic=nothing')
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No topics with slug: nothing');
       });
   });
 });

@@ -32,8 +32,16 @@ exports.getTopics = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
-    .then((articles) => {
+  const promises = [
+    fetchArticles(req.query.sort_by, req.query.order, req.query.topic),
+  ];
+
+  if (req.query.topic) {
+    promises.push(checkExists('topics', 'slug', req.query.topic));
+  }
+
+  Promise.all(promises)
+    .then(([articles]) => {
       res.status(200).send({ articles });
     })
     .catch(next);
@@ -48,7 +56,7 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticleComments = (req, res, next) => {
-  return Promise.all([
+  Promise.all([
     fetchArticleComments(req.params.article_id),
     checkExists('articles', 'article_id', req.params.article_id),
   ])
@@ -67,7 +75,7 @@ exports.patchArticleById = (req, res, next) => {
 
 // DELETEs...
 exports.deleteCommentById = (req, res, next) => {
-  return checkExists('comments', 'comment_id', req.params.comment_id)
-    .then(() => res.status(204).send({}))
+removeCommentById(req.params.comment_id).
+then(() => res.status(204).send({}))
     .catch(next);
 };
