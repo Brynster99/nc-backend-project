@@ -73,9 +73,7 @@ exports.updateArticleById = (articleId, reqBody) => {
 };
 
 exports.removeCommentById = (commentId) => {
-  return db
-    .query('DELETE FROM comments WHERE comment_id = $1', [commentId])
-    .then(() => {});
+  return db.query('DELETE FROM comments WHERE comment_id = $1', [commentId]);
 };
 
 // --== Utils ==--
