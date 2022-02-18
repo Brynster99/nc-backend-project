@@ -2,6 +2,25 @@ const db = require('../db/connection');
 const fs = require('fs/promises');
 
 // --== Models ==--
+
+// CREATEs...
+exports.insertCommentById = (articleId, username, commentBody) => {
+  console.log('articleId >>> ', articleId);
+  console.log('username >>> ', username);
+  console.log('commentBody >>> ', commentBody);
+  return db
+    .query(
+      `INSERT INTO comments (article_id, author, body)
+  VALUES($1, $2, $3)
+  RETURNING *;`,
+      [articleId, username, commentBody]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
+
+// READs...
 exports.fetchApiDocs = () => {
   return fs
     .readFile(`${__dirname}/../endpoints.json`)
@@ -77,6 +96,7 @@ exports.fetchArticleComments = (articleId) => {
     .then(({ rows }) => rows);
 };
 
+// UPDATEs...
 exports.updateArticleById = (articleId, reqBody) => {
   if (!reqBody.hasOwnProperty('inc_votes'))
     return Promise.reject({
@@ -101,6 +121,7 @@ exports.updateArticleById = (articleId, reqBody) => {
     });
 };
 
+// DELETEs...
 exports.removeCommentById = (commentId) => {
   return db
     .query('DELETE FROM comments WHERE comment_id = $1', [commentId])
@@ -108,13 +129,15 @@ exports.removeCommentById = (commentId) => {
 };
 
 // --== Utils ==--
-exports.checkExists = (table, column, id) => {
+exports.checkExists = (table, column, value) => {
+  console.log(`Table: ${table}, Column: ${column}, Value: ${value}`);
   const validTables = ['articles', 'topics', 'users', 'comments'];
   const validColumns = [
     'article_id',
     'topic_id',
     'slug',
     'user_id',
+    'username',
     'comment_id',
   ];
 
@@ -122,12 +145,12 @@ exports.checkExists = (table, column, id) => {
     return Promise.reject({ status: 400, msg: 'Bad Request' });
 
   return db
-    .query(`SELECT * FROM ${table} WHERE ${column} = $1`, [id])
+    .query(`SELECT * FROM ${table} WHERE ${column} = $1`, [value])
     .then(({ rows }) => {
       if (rows.length === 0)
         return Promise.reject({
           status: 404,
-          msg: `No ${table} with ${column}: ${id}`,
+          msg: `No ${table} with ${column}: ${value}`,
         });
     });
 };

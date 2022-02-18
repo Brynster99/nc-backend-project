@@ -11,6 +11,64 @@ afterAll(() => db.end());
 
 // --== Tests ==--
 
+// POSTs...
+describe.only('POST /api/articles/:article_id/comments', () => {
+  test('STATUS 200: Returns created comment obj', () => {
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send({
+        username: 'icellusedkars',
+        body: 'did u know aye cell yous used kars',
+      })
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            author: 'icellusedkars',
+            body: 'did u know aye cell yous used kars',
+          })
+        );
+      });
+  });
+
+  test('STATUS 404: Returns error not found if passed username is valid but non-existent', () => {
+    return request(app)
+      .post('/api/articles/1/comments')
+      .send({
+        username: 'Brynster',
+        body: 'u suk',
+      })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('No users with username: Brynster');
+      });
+  });
+
+  test('STATUS 400: Returns error if article_id is not valid', () => {
+    return request(app)
+      .post('/api/articles/hello/comments')
+      .send({
+        username: 'icellusedkars',
+        body: 'hello there',
+      })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS 400: Returns error if body does not contain required data', () => {
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send({ username: 'icellusedkars' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+});
+
 // GETs...
 describe('API-wide tests', () => {
   test('STATUS: 404, Returns error message when invalid path specified', () => {
