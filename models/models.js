@@ -16,12 +16,41 @@ exports.fetchTopics = () => {
   return db.query('SELECT * FROM topics;').then(({ rows }) => rows);
 };
 
-exports.fetchArticles = () => {
-  return db
-    .query(
-      'SELECT articles.*, COUNT(articles.article_id) as comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY created_at DESC;'
-    )
-    .then(({ rows }) => rows);
+exports.fetchArticles = (sortBy = 'created_at', order = 'DESC', topic) => {
+  const allowedValues = {
+    sortBy: [
+      'article_id',
+      'title',
+      'topic',
+      'author',
+      'body',
+      'created_at',
+      'votes',
+      'comment_count',
+    ],
+    order: ['ASC', 'DESC'],
+  };
+
+  if (
+    !allowedValues.sortBy.includes(sortBy) ||
+    !allowedValues.order.includes(order)
+  ) {
+    return Promise.reject({ status: 400, msg: 'Bad Request' });
+  }
+
+  let queryStr = `SELECT articles.*, COUNT(articles.article_id) as comment_count FROM articles
+  LEFT JOIN comments ON articles.article_id = comments.article_id`;
+
+  const options = [];
+
+  if (topic) {
+    queryStr += ' WHERE articles.topic = $1';
+    options.push(topic);
+  }
+
+  queryStr += ` GROUP BY articles.article_id ORDER BY ${sortBy} ${order};`;
+
+  return db.query(queryStr, options).then(({ rows }) => rows);
 };
 
 exports.fetchArticleById = (articleId) => {
@@ -81,7 +110,13 @@ exports.removeCommentById = (commentId) => {
 // --== Utils ==--
 exports.checkExists = (table, column, id) => {
   const validTables = ['articles', 'topics', 'users', 'comments'];
-  const validColumns = ['article_id', 'topic_id', 'user_id', 'comment_id'];
+  const validColumns = [
+    'article_id',
+    'topic_id',
+    'slug',
+    'user_id',
+    'comment_id',
+  ];
 
   if (!validTables.includes(table) || !validColumns.includes(column))
     return Promise.reject({ status: 400, msg: 'Bad Request' });
