@@ -6,10 +6,13 @@ const {
   fetchArticleById,
   fetchArticleComments,
   updateArticleById,
+  removeCommentById,
   checkExists,
 } = require('../models/models');
 
 // --== Controllers ==--
+
+// GETs...
 exports.getApiDocs = (req, res, next) => {
   fetchApiDocs().then((docs) => {
     res.status(200).send({ docs });
@@ -55,10 +58,16 @@ exports.getArticleComments = (req, res, next) => {
     .catch(next);
 };
 
+// PATCHs...
 exports.patchArticleById = (req, res, next) => {
   updateArticleById(req.params.article_id, req.body)
-    .then((article) => {
-      res.status(200).send({ article });
-    })
+    .then((article) => res.status(200).send({ article }))
+    .catch(next);
+};
+
+// DELETEs...
+exports.deleteCommentById = (req, res, next) => {
+  return checkExists('comments', 'comment_id', req.params.comment_id)
+    .then(() => res.status(204).send({}))
     .catch(next);
 };

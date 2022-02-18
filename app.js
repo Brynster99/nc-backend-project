@@ -8,6 +8,7 @@ const {
   getArticleById,
   getArticleComments,
   patchArticleById,
+  deleteCommentById,
 } = require('./controllers/controllers');
 
 const app = express(); // creates instance of express...
@@ -25,6 +26,9 @@ app.get('/api/articles/:article_id/comments', getArticleComments);
 
 // PATCHs...
 app.patch('/api/articles/:article_id', patchArticleById);
+
+// DELETEs...
+app.delete('/api/comments/:comment_id', deleteCommentById);
 
 // if requested endpoint is not found...
 app.all('/*', (req, res) => {
