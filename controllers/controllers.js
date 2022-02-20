@@ -1,4 +1,5 @@
 const {
+  insertCommentById,
   fetchApiDocs,
   fetchUsers,
   fetchTopics,
@@ -11,6 +12,22 @@ const {
 } = require('../models/models');
 
 // --== Controllers ==--
+
+// POSTs...
+exports.postCommentById = (req, res, next) => {
+  if (
+    !req.body.hasOwnProperty('username') ||
+    !req.body.hasOwnProperty('body')
+  ) {
+    next({ status: 400, msg: 'Bad Request' });
+  } else {
+    insertCommentById(req.params.article_id, req.body.username, req.body.body)
+      .then((comment) => {
+        res.status(201).send({ comment });
+      })
+      .catch(next);
+  }
+};
 
 // GETs...
 exports.getApiDocs = (req, res, next) => {

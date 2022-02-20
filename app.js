@@ -1,6 +1,7 @@
 const express = require('express');
 const { customErrors, psqlErrors, serverErrors } = require('./errors');
 const {
+  postCommentById,
   getApiDocs,
   getUsers,
   getTopics,
@@ -15,6 +16,9 @@ const app = express(); // creates instance of express...
 app.use(express.json()); // parses request body to req.body...
 
 // --== Endpoints ==--
+
+// POSTs...
+app.post('/api/articles/:article_id/comments', postCommentById);
 
 // GETs...
 app.get('/api', getApiDocs);
