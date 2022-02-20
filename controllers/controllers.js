@@ -27,7 +27,6 @@ exports.postCommentById = (req, res, next) => {
     checkExists('articles', 'article_id', req.params.article_id),
   ])
     .then(() => {
-      console.log('passed checkExists');
       insertCommentById(
         req.params.article_id,
         req.body.username,

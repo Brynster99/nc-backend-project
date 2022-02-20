@@ -12,7 +12,7 @@ afterAll(() => db.end());
 // --== Tests ==--
 
 // POSTs...
-describe.only('POST /api/articles/:article_id/comments', () => {
+describe('POST /api/articles/:article_id/comments', () => {
   test('STATUS 200: Returns created comment obj', () => {
     return request(app)
       .post('/api/articles/2/comments')
@@ -62,6 +62,16 @@ describe.only('POST /api/articles/:article_id/comments', () => {
     return request(app)
       .post('/api/articles/2/comments')
       .send({ username: 'icellusedkars' })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe('Bad Request');
+      });
+  });
+
+  test('STATUS 400: Returns error if request body is empty', () => {
+    return request(app)
+      .post('/api/articles/2/comments')
+      .send({})
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe('Bad Request');

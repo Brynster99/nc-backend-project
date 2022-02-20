@@ -5,9 +5,6 @@ const fs = require('fs/promises');
 
 // CREATEs...
 exports.insertCommentById = (articleId, username, commentBody) => {
-  console.log('articleId >>> ', articleId);
-  console.log('username >>> ', username);
-  console.log('commentBody >>> ', commentBody);
   return db
     .query(
       `INSERT INTO comments (article_id, author, body)
@@ -130,7 +127,6 @@ exports.removeCommentById = (commentId) => {
 
 // --== Utils ==--
 exports.checkExists = (table, column, value) => {
-  console.log(`Table: ${table}, Column: ${column}, Value: ${value}`);
   const validTables = ['articles', 'topics', 'users', 'comments'];
   const validColumns = [
     'article_id',
