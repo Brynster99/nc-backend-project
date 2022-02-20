@@ -120,9 +120,9 @@ exports.updateArticleById = (articleId, reqBody) => {
 
 // DELETEs...
 exports.removeCommentById = (commentId) => {
-  return db
-    .query('DELETE FROM comments WHERE comment_id = $1', [commentId])
-    .then(() => {});
+  return db.query('DELETE FROM comments WHERE comment_id = $1 RETURNING *;', [
+    commentId,
+  ]);
 };
 
 // --== Utils ==--
