@@ -20,20 +20,13 @@ exports.postCommentById = (req, res, next) => {
     !req.body.hasOwnProperty('body')
   ) {
     next({ status: 400, msg: 'Bad Request' });
+  } else {
+    insertCommentById(req.params.article_id, req.body.username, req.body.body)
+      .then((comment) => {
+        res.status(201).send({ comment });
+      })
+      .catch(next);
   }
-
-  Promise.all([
-    checkExists('users', 'username', req.body.username),
-    checkExists('articles', 'article_id', req.params.article_id),
-  ])
-    .then(() => {
-      insertCommentById(
-        req.params.article_id,
-        req.body.username,
-        req.body.body
-      ).then((comment) => res.status(201).send({ comment }));
-    })
-    .catch(next);
 };
 
 // GETs...

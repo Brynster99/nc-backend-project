@@ -32,16 +32,16 @@ describe('POST /api/articles/:article_id/comments', () => {
       });
   });
 
-  test('STATUS 404: Returns error not found if passed username is valid but non-existent', () => {
+  test('STATUS 400: Returns error if passed username is not valid foreign key', () => {
     return request(app)
       .post('/api/articles/1/comments')
       .send({
         username: 'Brynster',
         body: 'u suk',
       })
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe('No users with username: Brynster');
+        expect(msg).toBe('Bad Request');
       });
   });
 
