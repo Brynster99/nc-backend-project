@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { customErrors, psqlErrors, serverErrors } = require('./errors');
 const {
   postCommentById,
@@ -13,6 +14,7 @@ const {
 } = require('./controllers/controllers');
 
 const app = express(); // creates instance of express...
+app.use(cors());
 app.use(express.json()); // parses request body to req.body...
 
 // --== Endpoints ==--
