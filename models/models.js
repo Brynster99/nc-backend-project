@@ -89,7 +89,10 @@ exports.fetchArticleById = (articleId) => {
 
 exports.fetchArticleComments = (articleId) => {
   return db
-    .query('SELECT * FROM comments WHERE article_id = $1', [articleId])
+    .query(
+      'SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC',
+      [articleId]
+    )
     .then(({ rows }) => rows);
 };
 
