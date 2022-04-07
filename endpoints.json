@@ -1,87 +1,125 @@
 {
-  "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
-  },
-  "GET /api/users": {
-    "description": "serves an array of all users",
-    "queries": [],
-    "exampleResponse": {
-      "users": [
-        { "username": "butter_bridge" },
-        { "username": "icellusedkars" }
-      ]
+  "POST Requests": {
+    "POST /api/articles/:article_id/comments": {
+      "description": "add a comment for a particular article_id (if id exists)",
+      "exampleRequestBody": {
+        "username": "butter_bridge",
+        "body": "Wow, this is a great article!"
+      },
+      "exampleResponse": {
+        "comment": {
+          "comment_id": 396,
+          "body": "Legendary",
+          "article_id": 2,
+          "author": "cooljmessy",
+          "votes": 0,
+          "created_at": "2022-04-06T15:27:15.888Z"
+        }
+      }
     }
   },
-  "GET /api/topics": {
-    "description": "serves an array of all topics",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+  "GET Requests": {
+    "GET /api": {
+      "description": "serves up a json representation of all the available endpoints of the api"
+    },
+    "GET /api/users": {
+      "description": "serves an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "users": [
+          { "username": "butter_bridge" },
+          { "username": "icellusedkars" }
+        ]
+      }
+    },
+    "GET /api/topics": {
+      "description": "serves an array of all topics",
+      "exampleResponse": {
+        "topics": [{ "slug": "football", "description": "Footie!" }]
+      }
+    },
+    "GET /api/articles": {
+      "description": "serves an array of all articles",
+      "queries": {
+        "topic": ["filter to only articles of an existing topic"],
+        "sort_by": ["created_at", "votes", "comment_count"],
+        "order_by": ["DESC", "ASC"]
+      },
+      "exampleResponse": {
+        "articles": [
+          {
+            "article_id": 1,
+            "title": "Living in the shadow of a great man",
+            "topic": "mitch",
+            "author": "butter_bridge",
+            "body": "I find this existence challenging",
+            "created_at": 1594329060000,
+            "votes": 100,
+            "comment_count": "1"
+          },
+          {
+            "article_id": 2,
+            "title": "Sony Vaio; or, The Laptop",
+            "topic": "mitch",
+            "author": "icellusedkars",
+            "body": "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+            "created_at": 1602828180000,
+            "votes": 0,
+            "comment_count": "2"
+          }
+        ]
+      }
+    },
+    "GET /api/article/:article_id": {
+      "description": "serves a single article of given id if exists",
+      "queries": [],
+      "exampleResponse": {
+        "article": {
+          "article_id": 1,
+          "author": "Brynster",
+          "title": "The Theft of Booky McBook Face",
+          "topic": "Comedy Crime Drama",
+          "body": "woopdy booky doo!",
+          "created_at": 1527695953341,
+          "votes": 420,
+          "comment_count": "11"
+        }
+      }
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": [],
-    "exampleResponse": {
-      "articles": [
-        {
+  "PATCH Requests": {
+    "PATCH /api/article/:article_id": {
+      "description": "amends an article's votes, then serves the updated article with amended vote count",
+      "queries": [],
+      "exampleRequestBody": {
+        "inc_votes": 50
+      },
+      "exampleRequestBody2": {
+        "inc_votes": -50
+      },
+      "exampleResponse": {
+        "article": {
           "article_id": 1,
           "title": "Living in the shadow of a great man",
           "topic": "mitch",
           "author": "butter_bridge",
           "body": "I find this existence challenging",
-          "created_at": 1594329060000,
-          "votes": 100,
-          "comment_count": "1"
-        },
-        {
-          "article_id": 2,
-          "title": "Sony Vaio; or, The Laptop",
-          "topic": "mitch",
-          "author": "icellusedkars",
-          "body": "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
-          "created_at": 1602828180000,
-          "votes": 0,
-          "comment_count": "2"
+          "created_at": 1527695953341,
+          "votes": 150,
+          "comment_count": "4"
         }
-      ]
-    }
-  },
-  "GET /api/article/:article_id": {
-    "description": "serves a single article of given id if exists",
-    "queries": [],
-    "exampleResponse": {
-      "article": {
-        "article_id": 1,
-        "author": "Brynster",
-        "title": "The Theft of Booky McBook Face",
-        "topic": "Comedy Crime Drama",
-        "body": "woopdy booky doo!",
-        "created_at": 1527695953341,
-        "votes": 420,
-        "comment_count": "11"
       }
     }
   },
-  "PATCH /api/article/:article_id": {
-    "description": "amends an article's votes, then serves the updated article with amended vote count",
-    "queries": [],
-    "exampleRequestBody": {
-      "inc_votes": 50
-    },
-    "exampleRequestBody2": {
-      "inc_votes": -50
-    },
-    "exampleResponse": {
-      "article": {
-        "article_id": 1,
-        "title": "Living in the shadow of a great man",
-        "topic": "mitch",
-        "author": "butter_bridge",
-        "body": "I find this existence challenging",
-        "created_at": 1527695953341,
-        "votes": 150,
-        "comment_count": "4"
+  "DELETE Requests": {
+    "GET /api/users": {
+      "description": "serves an array of all users",
+      "queries": [],
+      "exampleResponse": {
+        "users": [
+          { "username": "butter_bridge" },
+          { "username": "icellusedkars" }
+        ]
       }
     }
   }

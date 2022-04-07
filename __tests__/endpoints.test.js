@@ -13,7 +13,7 @@ afterAll(() => db.end());
 
 // POSTs...
 describe('POST /api/articles/:article_id/comments', () => {
-  test('STATUS 200: Returns created comment obj', () => {
+  test('STATUS 201: Returns created comment obj', () => {
     return request(app)
       .post('/api/articles/2/comments')
       .send({
@@ -99,12 +99,10 @@ describe('GET /api', () => {
       .then(({ body: { docs } }) => {
         expect(docs).toEqual(
           expect.objectContaining({
-            'GET /api': expect.any(Object),
-            'GET /api/users': expect.any(Object),
-            'GET /api/topics': expect.any(Object),
-            'GET /api/articles': expect.any(Object),
-            'GET /api/article/:article_id': expect.any(Object),
-            'PATCH /api/article/:article_id': expect.any(Object),
+            'POST Requests': expect.any(Object),
+            'GET Requests': expect.any(Object),
+            'PATCH Requests': expect.any(Object),
+            'DELETE Requests': expect.any(Object),
           })
         );
       });
