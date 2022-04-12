@@ -24,7 +24,6 @@
     },
     "GET /api/users": {
       "description": "serves an array of all users",
-      "queries": [],
       "exampleResponse": {
         "users": [
           { "username": "butter_bridge" },
@@ -40,7 +39,7 @@
     },
     "GET /api/articles": {
       "description": "serves an array of all articles",
-      "queries": {
+      "availableQueries": {
         "topic": ["filter to only articles of an existing topic"],
         "sort_by": ["created_at", "votes", "comment_count"],
         "order_by": ["DESC", "ASC"]
@@ -72,7 +71,6 @@
     },
     "GET /api/article/:article_id": {
       "description": "serves a single article of given id if exists",
-      "queries": [],
       "exampleResponse": {
         "article": {
           "article_id": 1,
@@ -85,17 +83,39 @@
           "comment_count": "11"
         }
       }
+    },
+    "GET /api/article/:article_id/comments": {
+      "description": "serves an array of comments for a given article id if exists",
+      "exampleResponse": {
+        "comments": [
+          {
+            "comment_id": 396,
+            "body": "Legendary",
+            "article_id": 2,
+            "author": "cooljmessy",
+            "votes": 0,
+            "created_at": "2022-04-06T15:27:15.888Z"
+          },
+          {
+            "comment_id": 162,
+            "body": "Et suscipit maxime sit sunt consequuntur consequatur fugiat molestias. Et quis enim vero.",
+            "article_id": 2,
+            "author": "grumpy19",
+            "votes": 14,
+            "created_at": "2020-10-03T19:22:00.000Z"
+          }
+        ]
+      }
     }
   },
   "PATCH Requests": {
     "PATCH /api/article/:article_id": {
       "description": "amends an article's votes, then serves the updated article with amended vote count",
-      "queries": [],
       "exampleRequestBody": {
-        "inc_votes": 50
+        "inc_votes": 1
       },
       "exampleRequestBody2": {
-        "inc_votes": -50
+        "inc_votes": -1
       },
       "exampleResponse": {
         "article": {
@@ -105,22 +125,17 @@
           "author": "butter_bridge",
           "body": "I find this existence challenging",
           "created_at": 1527695953341,
-          "votes": 150,
+          "votes": 101,
           "comment_count": "4"
         }
       }
     }
   },
   "DELETE Requests": {
-    "GET /api/users": {
-      "description": "serves an array of all users",
-      "queries": [],
-      "exampleResponse": {
-        "users": [
-          { "username": "butter_bridge" },
-          { "username": "icellusedkars" }
-        ]
-      }
+    "DELETE /api/comments/:comment_id": {
+      "description": "deletes comment with given id (if exists)",
+      "exampleStatusCode": 204,
+      "exampleResponse": {}
     }
   }
 }

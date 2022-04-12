@@ -61,6 +61,11 @@ https://northcoders-backend-project.herokuapp.com
 >
 > serves an array of all articles
 >
+> > **Available queries:**  
+> > "topic" = can be set to any existing topic  
+> > "sort_by" = "created_at"(default), "votes", "comment_count"  
+> > "order_by" = "DESC"(default) or "ASC"
+>
 > Example response:  
 > `{ "articles": [ { "article_id": 1, "title": "Living in the shadow of a great man", "topic": "mitch", "author": "butter_bridge", "body": "I find this existence challenging", "created_at": 1594329060000, "votes": 100, "comment_count": "1" }, { "article_id": 2, "title": "Sony Vaio; or, The Laptop", "topic": "mitch", "author": "icellusedkars", "body": "Comment Body", "created_at": 1602828180000, "votes": 0, "comment_count": "2" } ] }`
 
@@ -88,9 +93,9 @@ https://northcoders-backend-project.herokuapp.com
 
 > ### `PATCH /api/articles/:article_id`
 >
-> increment article votes by specified integer (if id exists)
+> amends an article's votes, then serves the updated article with amended vote count
 >
-> Example body:  
+> Example request body:  
 > `{ inc_votes: -1 }`
 >
 > Example response:  
