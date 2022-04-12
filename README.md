@@ -4,14 +4,11 @@
 
 One week project completed during the Northcoders 13 week bootcamp built with PostgreSQL, Node.js, Express.js and hosted with Heroku.
 
+This project is used as the Back End of my Front End project: https://github.com/Brynster99/nc-news
+
 ## <b>Hosted API</b>
 
 https://northcoders-backend-project.herokuapp.com
-
-## <b>Minimum Requirements</b>
-
-- Node.js (v16.13.1)
-- PostgreSQL (v2.5.2)
 
 <br>
 
@@ -116,26 +113,31 @@ https://northcoders-backend-project.herokuapp.com
 
 ## <b>How to clone and set up this repository</b>
 
-### <b>Step 1:</b> Clone this GitHub repository
+### <b>Step 1:</b> Meet Minimum Requirements
+
+- Node.js (v16.13.1)
+- PostgreSQL (v2.5.2)
+
+### <b>Step 2:</b> Clone this GitHub repository
 
 `'git clone https://github.com/Brynster99/nc-backend-project.git'`
 
-### <b>Step 2:</b> Install dependencies
+### <b>Step 3:</b> Install dependencies
 
 Install JS dependencies by running `'npm i'` within the cloned repository
 
 You must also have PostgreSQL installed and running for following steps to succeed
 
-### <b>Step 3:</b> Add configuration files
+### <b>Step 4:</b> Add configuration files
 
 Create `'.env.test'` and `'.env.development'` files containing `'PGDATABASE=nc_news_test'` and `'PGDATABASE=nc_news'` respectively, <b>in the root directory</b> of this repository
 
-### <b>Step 4:</b> Run setup scripts
+### <b>Step 5:</b> Run setup scripts
 
 - Run `'npm run setup-dbs'` to create the databases in PostgreSQL
 - Run `'npm run seed'` to seed the created databases
 
-### <b>Step 5:</b> Run tests OR Experiment with API locally
+### <b>Step 6:</b> Run tests OR Experiment with API locally
 
 At this stage, you're able to run tests with `'npm run test'`
 
