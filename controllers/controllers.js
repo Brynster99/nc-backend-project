@@ -31,15 +31,19 @@ exports.postCommentById = (req, res, next) => {
 
 // GETs...
 exports.getApiDocs = (req, res, next) => {
-  fetchApiDocs().then((docs) => {
-    res.status(200).send({ docs });
-  });
+  fetchApiDocs()
+    .then((docs) => {
+      res.status(200).send({ docs });
+    })
+    .catch(next);
 };
 
 exports.getUsers = (req, res, next) => {
-  fetchUsers().then((users) => {
-    res.status(200).send({ users });
-  });
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
 };
 
 exports.getTopics = (req, res, next) => {
